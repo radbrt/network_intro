@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 library(learnr)
-library(gradethis)
 library(igraph)
 library(tidyverse)
 
@@ -185,11 +184,6 @@ enron <- graph_from_data_frame(edgelist)
 
 ```
 
-```{r enron_density-check}
-grade_result(
-  pass_if(~ identical(.result, edge_density(enron)), "Good job!")
-)
-```
 
 ```{r enron_density-solution}
 edge_density(enron)
@@ -296,19 +290,6 @@ max(enron_node_in)
 
 ```
 
-```{r max_degrees-check}
-
-enron_node_in <- degree(enron, mode="in")
-enron_node_out <- degree(enron, mode="out")
-enron_node_all <- degree(enron, mode="all")
-
-grade_result(
-  pass_if(~ identical(.result, max(enron_node_in) ) | identical(.result, max(enron_node_out)) | identical(.result, max(enron_node_all)), "That's right!")
-)
-
-
-```
-
 
 Max degrees are the same for both in and out, which is again exactly half of the max of all degrees. This can't be right - the most likely explanation is that this network somehow contains one edge in each direction for every email sent. If this is the case, we will have to either limit our analysis to questions that doesn't require a directed network, or we have to find a better source of data.
 
@@ -377,14 +358,6 @@ n_edges
 
 ```
 
-```{r num_edges-check}
-
-grade_result(
-  pass_if(~ identical(.result, length(E(enron2))), "That's right!")
-)
-
-```
-
 ```{r num_edges-solution}
 
 all_edges <- E(enron2)
@@ -418,14 +391,6 @@ n_nodes
 
 ```
 
-```{r num_nodes-check}
-
-grade_result(
-  pass_if(~ identical(.result, length(V(enron2))), "That's right!")
-)
-
-```
-
 ```{r num_nodes-solution}
 
 all_nodes <- V(enron2)
@@ -446,14 +411,6 @@ We are already very used to finding the density:
 
 ```
 
-```{r new_edge_density-check}
-
-grade_result(
-  pass_if(~ identical(.result, edge_density(enron2)), "Good job!")
-)
-
-```
-
 ```{r new_edge_density-solution}
 
 edge_density(enron2)
@@ -469,16 +426,6 @@ So, let's get to where we stopped last time: Edge degrees. Find edge degrees for
 enron_node_in <- ....
 enron_node_out <- ....
 enron_node_all <- ....
-
-....
-
-```
-
-```{r max_degrees_enron2-check}
-
-grade_result(
-  pass_if(~ identical(.result, max(degree(enron2, mode="in"))) | identical(.result, max(degree(enron2, mode="out"))) | identical(.result, max(degree(enron2, mode="all"))), "Good job!")
-)
 
 ....
 
@@ -533,14 +480,6 @@ sum_degrees_lt_5 <- ____
 number_of_edges_total <- ____
 
 sum_degrees_lt_5/number_of_edges_total
-```
-
-```{r degrees_lt_5-check}
-
-grade_result(
-  pass_if(~ identical(.result, sum(degree(enron2, mode="out")<5)/length(V(enron2))), "Excellent!")
-)
-
 ```
 
 ```{r degrees_lt_5-solution}
@@ -629,15 +568,6 @@ ____
 
 ```
 
-
-```{r weak_component-check}
-
-grade_result(
-  pass_if(~ identical(.result, max( components(enron2, mode="weak")$csize) ), "Impressive!")
-)
-
-```
-
 ```{r weak_component-solution}
 
 weak_components <- components(enron2, mode="weak")
@@ -663,15 +593,6 @@ weak_components <- components(enron2, mode="weak")
 ```{r weak_component_share, exercise=TRUE}
 
 ____ / ____
-
-```
-
-```{r weak_component_share-check}
-
-grade_result(
-  pass_if(~ identical(.result, max(weak_components$csize) / sum(weak_components$csize) ) , "That's right!")
-)
-
 
 ```
 
