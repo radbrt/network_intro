@@ -1,0 +1,9 @@
+version: '2'
+services:
+  shineserv:
+    image: learnrimg
+    ports:
+        - "3838:3838"
+    volumes:
+        - "./app:/srv/shiny-server/"
+        - "./data:/data/"
