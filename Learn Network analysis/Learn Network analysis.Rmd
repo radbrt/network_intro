@@ -57,9 +57,7 @@ Networks can be cool to look at, but for many of us the real-world networks we w
 - Some nodes are connected to very many other nodes, while other are only connected one or two. The number of edges connected to a node is called the *degree* of the node.
 - With 34 nodes, there could theoretically be as many as `r 34*33/2` edges. The number of actual edges divided by the total possible number of edges is called the *density* of the graph - in this case the density is `r 78 / 561`.
 
-Caalculating these measures by hand is a pain, and our graph library igraph includes a lot of functions for calculating these and other measures.
-
-
+Calculating these measures by hand is a pain, and our graph library igraph includes a lot of functions for calculating these and other measures.
 
 ## Creating a graph
 
@@ -256,7 +254,6 @@ enron_node_degrees <- degree(enron)
 hist(log10(enron_node_degrees))
 
 ```
-
 
 ## Directed networks
 
