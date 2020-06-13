@@ -1,0 +1,12 @@
+name: intermediate_networks
+title: intermediate_networks
+username:
+account: radbrt
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2421591
+bundleId: 3238945
+url: https://radbrt.shinyapps.io/intermediate_networks/
+when: 1591549990.72318
+asMultiple: FALSE
+asStatic: FALSE
