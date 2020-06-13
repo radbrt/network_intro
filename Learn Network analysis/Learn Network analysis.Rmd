@@ -1,5 +1,5 @@
 ---
-title: "Tutorial"
+title: "Learn network analysis"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
