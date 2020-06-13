@@ -39,29 +39,25 @@ I am a big fan of the tidyverse packages, especially for teaching, and I strongl
 
 ## An intro to networks
 
-Everybody has an intuitive understanding of what networks are - we are surrounded by them. The internet is a network (it's right there in the name), our friends, be it on social media and in real life are networks, and the road system is a network. And Google bevcame Google by treating all the links around the internet as a network.
+Everybody has an intuitive understanding of what networks are - we are surrounded by them. The internet is a network (it's right there in the name), our friends, be it on social media and in real life are networks, and the road system is a network. And Google became Google by treating all the websites on the internet as nodes, and all the links between them as edges.
 
 While a lot can be seen as network (it's all a matter of perspective), we need to know when it is useful to see something as a network. We will explore this quesiton through the tutorial, but for now a good rule of thumb is to start thinking in terms of networks when you start wondering about "friends of friends" or websites that link to other websites that link to your own website.
 
 Despite the intuitive understanding of what a network is, network analysis brings with it a lot of new words. We have already mentioned that networks often are called *graphs* - which confusingly have nothing to do with visualization. A graph consists of "nodes" (which are sometimes called Verticies) and "edges" (which thankfully doesnt have any other names).
 
-Running the code below automatically generates a network. Try running it multiple times, and you'll see that the network generated changes a little each time.
+The network below is well known as the "karate" network, depicting social connections in and around a college karate club. You can clearly see how some people are more central in the network, while other are on the periphery with fewer social connections. You can also see what appears to be two groups - one centered around the node labeled "H", and another centered around the node labeled "A". The network is from a research project carried out by Wayne W. Zachary, published in the Journal of Anthropological Research in 1977, and the two groups are the focus of the paper. The network even has its own wikipedia page: https://en.wikipedia.org/wiki/Zachary%27s_karate_club
 
-```{r first_graph, exercise=TRUE}
+![The Karate network](./images/karate.png)
 
-plot(sample_smallworld(1, 12, 2, 0.03), vertex.size=25)
 
-```
 
-The network below consists of 12 nodes (the yellow circles), with a total of 24 edges (lines) connecting them.
+Networks can be cool to look at, but for many of us the real-world networks we want to analyze is way to large to visualize in any meaningful way. Instead, we have to use more abstract concepts to describe the network. Looking carefully at the graph above, we can make some observations:
 
-Networks can be cool to look at, but for many of us the real-world networks we want to analyze is way to large to visualize in any meaningful way. Instead, we have to use more abstract concepts to describe the network. Just from looking carefully at the graph above, we can makes some observations:
+- There are 34 nodes and 78 edges, so an average of a little over two edges per node. But since it takes two to tango, each node is on averate linked to four other nodes.
+- Some nodes are connected to very many other nodes, while other are only connected one or two. The number of edges connected to a node is called the *degree* of the node.
+- With 34 nodes, there could theoretically be as many as `r 34*33/2` edges. The number of actual edges divided by the total possible number of edges is called the *density* of the graph - in this case the density is `r 78 / 561`.
 
-- There are 12 nodes and 24 edges, so an average of two edges per node. But since it takes two to tango, each node is on averate linked to four other nodes.
-- Some nodes are connected to five nodes, while other are only connected to three. The number of edges connected to a node is called the *degree* of the node.
-- With 12 nodes, there could theoretically be as many as `r 12*11/2` edges. The number of actual edges divided by the total possible number of edges is called the *density* of the graph - in this case the density is `r 24/66`.
-
-Caalculating these measures by hand is a pain, and our graph library tidygraph includes a lot of functions for calculating these and other measures.
+Caalculating these measures by hand is a pain, and our graph library igraph includes a lot of functions for calculating these and other measures.
 
 
 
@@ -208,9 +204,9 @@ edge_density(enron)
 The density is below 0.0003, significantly less than the 0.22 we found in the ethanol molecule.
 
 
-The `degree` function returns the degree for each node, and by checking for numbers less than 5 we get a vector that is true for nodes with a degree under five and false for others. Since true evaluates to 1 and false to 0, we can simply take the sum to find the number of nodes of degree less than five. 
+The `degree` function returns the degree for each node, and by checking for numbers less than 5 we get a vector that is true for nodes with a degree under five and false for others - we assign this vector to the variable `degrees_lt_5`. Since true evaluates to 1 and false to 0, we can simply take the sum to find the number of nodes of degree less than five. 
 
-```{r enron_degrees_lt_5}
+```{r enron_degrees_lt_5, echo=TRUE}
 
 degrees_lt_5 <- degree(enron)<5
 
@@ -336,9 +332,10 @@ sum(odd_degrees)
 
 Not a single edge has an odd number of degrees. How does this affect our previous conclusions?
 
-## A new try
 
-We have gotten a hold of a better dataset, which contains the actual directions of the emails, and created a dataframe called `mail_edgelist`. Now, we have to repeat the analysis on this new, corrected data. If you take a look at the dataframe, you'll notice that it does not only contain `to` and `from` columns, it also contains a `weight` column which indicates how many emails were sent from the sender to the recipient. The `graph_from_data_frame` function assumes that the two first columns in the dataframe are the nodes the edge is connected to, any further columns are seen as **edge attributes** which we can reference when doing calculations. We will come back to edge weights, for now we will do our analysis based on edges alone. While we are at it, let's check that the number of edges is the same as the number of rows in the edgelist.
+### Emails are directed
+
+Since the previous Enron dataset was unsuited for our purposes, we have gotten a hold of a better dataset, which contains the actual directions of the emails, and created a dataframe called `mail_edgelist`. Now, we have to repeat the analysis on this new, corrected data. If you take a look at the dataframe, you'll notice that it does not only contain `to` and `from` columns, it also contains a `weight` column which indicates how many emails were sent from the sender to the recipient. The `graph_from_data_frame` function assumes that the two first columns in the dataframe are the nodes the edge is connected to, any further columns are seen as **edge attributes** which we can reference when doing calculations. We will come back to edge weights, for now we will do our analysis based on edges alone. While we are at it, let's check that the number of edges is the same as the number of rows in the edgelist.
 
 ```{r create_new_graph, exercise=TRUE}
 
@@ -556,7 +553,9 @@ sum_degrees_lt_5/number_of_edges_total
 ```
 
 
-## Advanced concepts
+## Distances and components
+
+### Distances
 
 So far we have focused on relatively simple concepts - many of which could relatively easily have been calculated from the edgelist directly. Now, we are going to explore the structure of the network, and this is where network analysis tools really come into their right. First, we will take a look at the degrees of separation - that is, how many "hops" does it take to go from a given node, to another given node. There are two ways of measuring this: The diameter of the network tells us the distance between the two nodes that are farthest apart. The average distance tells us the average distance between all nodes. Both these measures are extremely compute-intensive for larger graphs, but it is tolerable for our graph.
 
